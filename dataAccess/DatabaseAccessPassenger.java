@@ -85,10 +85,15 @@ public class DatabaseAccessPassenger extends DatabaseAccess {
     }
 
     public boolean findPassengerByID(int userID) throws SQLException {
-        List<Passenger> passengerList = findAllPassengers();
-        for (int i = 0; i < passengerList.size(); i++) {
-            if (passengerList.get(i).getUserID() == userID)
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("select user_id from passenger where user_id='%d'",userID);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next()) {
                 return true;
+            }
+        }else {
+            return false;
         }
         return false;
     }
@@ -154,18 +159,20 @@ public class DatabaseAccessPassenger extends DatabaseAccess {
         return false;
     }
 
-    public void printOngoingTravels() throws SQLException {
-        boolean emptyResult=false;
-        List<Passenger> passengerList = findAllPassengers();
-        for (int i = 0; i < passengerList.size(); i++) {
-            if(passengerList.get(i).getStatus()==1){
-                System.out.println(passengerList.get(i).toString());
-                emptyResult=true;
+    public boolean checkPassengerStatus(int userID) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("select * from passenger where user_id='%d' and status='%d'",userID,0);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next()) {
+                return true;
             }
+        }else {
+            return false;
         }
-        if(!emptyResult){
-            System.out.println("there is no ongoing travel !");
-        }
+        return false;
     }
+
+
 
 }

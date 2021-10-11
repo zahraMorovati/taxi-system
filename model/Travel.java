@@ -11,9 +11,13 @@ public class Travel {
     private Coordinate origin;
     private Coordinate destination;
     private double price;
-    private boolean isPaid;
+    private TravelStatus travelStatus;
 
-    public Travel(int driverID, int passengerID, MyDate startDate, MyDate endDate, Coordinate origin, Coordinate destination, double price, boolean isPaid) {
+    public enum TravelStatus{
+        ONGOING,WAITING_FOR_PAYMENT,FINISHED;
+    }
+
+    public Travel(int driverID, int passengerID, MyDate startDate, MyDate endDate, Coordinate origin, Coordinate destination, double price, TravelStatus travelStatus) {
         this.driverID = driverID;
         this.passengerID = passengerID;
         this.startDate = startDate;
@@ -21,10 +25,10 @@ public class Travel {
         this.origin = origin;
         this.destination = destination;
         this.price = price;
-        this.isPaid = isPaid;
+        this.travelStatus=travelStatus;
     }
 
-    public Travel(int id, int driverID, int passengerID, MyDate startDate, MyDate endDate, Coordinate origin, Coordinate destination, double price, boolean isPaid) {
+    public Travel(int id, int driverID, int passengerID, MyDate startDate, MyDate endDate, Coordinate origin, Coordinate destination, double price,TravelStatus travelStatus) {
         this.id = id;
         this.driverID = driverID;
         this.passengerID = passengerID;
@@ -33,7 +37,7 @@ public class Travel {
         this.origin = origin;
         this.destination = destination;
         this.price = price;
-        this.isPaid = isPaid;
+        this.travelStatus=travelStatus;
     }
 
 
@@ -94,18 +98,14 @@ public class Travel {
         this.destination = destination;
     }
 
-    public boolean isPaid() {
-        return isPaid;
+    public TravelStatus getTravelStatus() {
+        return travelStatus;
     }
 
-    public int getIsPaid() {
-        if(isPaid)
-            return 1;
-        else return 0;
-    }
 
-    public void setPaid(boolean paid) {
-        isPaid = paid;
+
+    public void setTravelStatus(TravelStatus travelStatus) {
+        this.travelStatus = travelStatus;
     }
 
     public double getPrice() {

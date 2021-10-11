@@ -43,5 +43,9 @@ public class Coordinate {
         }
     }
 
+    public static Coordinate defaultCoordinate(){
+        return new Coordinate(0,0);
+    }
+
 
 }

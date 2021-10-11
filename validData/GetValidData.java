@@ -1,10 +1,10 @@
 package validData;
 
-import model.CarType;
-import model.Coordinate;
-import model.VehicleColor;
+import dataAccess.DatabaseAccessCar;
+import model.*;
 import myDate.MyDate;
 
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -164,6 +164,53 @@ public class GetValidData {
             default:
                 return null;
         }
+    }
+
+    public static Driver getDriver(DatabaseAccessCar databaseAccessCar) throws SQLException {
+        String firstName = getValidName("first name: ");
+        String lastName = getValidName("last name: ");
+        int nationalCode = getValidInt("national code: ");
+        String phoneNumber = getValidPhoneNumber("phone number: ");
+        MyDate birthDate = getValidBirthDate();
+        Car car = getCarInfo();
+        databaseAccessCar.save(car);
+        int carID = databaseAccessCar.lastCarID();
+        Driver driver = new Driver(firstName, lastName, nationalCode, phoneNumber, birthDate, carID,false,Coordinate.defaultCoordinate());
+        return driver;
+    }
+
+    public static Car getCarInfo() {
+        System.out.println("enter car info:");
+        System.out.print(BLUE_BRIGHT + "plaque: " + RESET);
+        String plaque = input.next();
+        String ownerFirstName = getValidName("owner first name: ");
+        String ownerLastname = getValidName("owner last name: ");
+        VehicleColor vehicleColor = getValidColor();
+        CarType carType = getValidCarType();
+        Car car = new Car(1, plaque, ownerFirstName, ownerLastname, vehicleColor, carType);
+        return car;
+    }
+
+    public static Passenger getPassengerInfo() {
+        String firstName = getValidName("first name: ");
+        String lastName = getValidName("last name: ");
+        int nationalCode = getValidInt("national code: ");
+        String phoneNumber = getValidPhoneNumber("phone number: ");
+        MyDate birthDate = getValidBirthDate();
+        double balance = getValidDouble("balance: ");
+        Passenger passenger = new Passenger(firstName, lastName, nationalCode, phoneNumber, birthDate, balance, false);
+        return passenger;
+    }
+
+    public static void getTravelInfo(Travel.TravelStatus travelStatus){
+        int user_id_driver = getValidInt("user_id_driver: ");
+        int user_id_passenger = getValidInt("user_id_passenger: ");
+        MyDate startDate = getValidDate("startDate: ");
+        MyDate endDate = getValidDate("startDate: ");
+        Coordinate origin = getValidCoordinate("origin: ");
+        Coordinate destination = getValidCoordinate("destination: ");
+        double price = getValidDouble("price: ");
+        Travel travel=new Travel(user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price, travelStatus);
     }
 
 

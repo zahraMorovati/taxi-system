@@ -37,7 +37,7 @@ public class DatabaseAccessTravel extends DatabaseAccess {
                 "    origin VARCHAR(50)," +
                 "    destination VARCHAR(50)," +
                 "    price DOUBLE," +
-                "    isPaid boolean DEFAULT false," +
+                "    status VARCHAR(25)," +
                 "    PRIMARY KEY (id) ," +
                 "    FOREIGN KEY (user_id_driver) REFERENCES driver(user_id)," +
                 "    FOREIGN KEY (user_id_passenger) REFERENCES passenger(user_id))");
@@ -47,10 +47,10 @@ public class DatabaseAccessTravel extends DatabaseAccess {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("INSERT INTO travel" +
-                            " ( user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price,isPaid) " +
+                            " ( user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price,status) " +
                             "VALUES ('%d','%d','%s','%s','%s','%s','%f','%d')",
                     t.getDriverID(),t.getPassengerID(),t.getStartDate().toString(),t.getEndDate().toString(),
-            t.getOrigin().toString(),t.getDestination().toString(),t.getPrice(),t.getIsPaid());
+            t.getOrigin().toString(),t.getDestination().toString(),t.getPrice(),t.getTravelStatus());
             int i = statement.executeUpdate(sqlQuery);
             if(i>=0){
                 System.out.println(GREEN+"your information successfully saved!"+RESET);
@@ -76,8 +76,8 @@ public class DatabaseAccessTravel extends DatabaseAccess {
                 Coordinate origin=stringToCoordinate(resultSet.getString("origin"));
                 Coordinate destination=stringToCoordinate(resultSet.getString("destination"));
                 double price = resultSet.getDouble("price");
-                Boolean isPaid = resultSet.getBoolean("isPaid");
-                Travel travel = new Travel(user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price,isPaid);
+                Travel.TravelStatus status=setValidTravelStatus(resultSet.getString("status"));
+                Travel travel = new Travel(user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price,status);
                 travelList.add(travel);
             }
             return travelList;
@@ -86,11 +86,35 @@ public class DatabaseAccessTravel extends DatabaseAccess {
         }
     }
 
+    public Travel.TravelStatus setValidTravelStatus(String str){
+        if(str.equals(Travel.TravelStatus.WAITING_FOR_PAYMENT)){
+            return Travel.TravelStatus.WAITING_FOR_PAYMENT;
+        }else if(str.equals(Travel.TravelStatus.ONGOING)){
+            return Travel.TravelStatus.ONGOING;
+        }else if(str.equals(Travel.TravelStatus.FINISHED)){
+            return Travel.TravelStatus.FINISHED;
+        }else return null;
+    }
+
     public void printAllTravel() throws SQLException {
         List<Travel> travelList = findAllTravels();
         System.out.println("travel list: ");
         for (int i = 0; i < travelList.size(); i++) {
             System.out.println(travelList.get(i).toString());
+        }
+    }
+
+    public void printOngoingTravels() throws SQLException {
+        List<Travel> travelList = findAllTravels();
+        boolean notFound=false;
+        for (Travel travel : travelList) {
+            if(travel.getTravelStatus().equals(Travel.TravelStatus.ONGOING)){
+                System.out.println(travel.toString());
+                notFound=true;
+            }
+        }
+        if(!notFound){
+            System.out.println("there is no ongoing travel !");
         }
     }
 

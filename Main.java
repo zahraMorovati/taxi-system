@@ -80,7 +80,7 @@ public class Main {
                 }
                 break;
                 case 5: {
-                    ongoingTravelMenu(databaseAccessTravel,databaseAccessDriver,databaseAccessPassenger);
+                    ongoingTravelMenu(databaseAccessTravel);
                 }
                 break;
                 case 6: {
@@ -107,42 +107,6 @@ public class Main {
             System.out.println(e.getCause());
             printMenu();
         }
-    }
-
-    public static Driver getDriver(DatabaseAccessCar databaseAccessCar) throws SQLException {
-        String firstName = getValidName("first name: ");
-        String lastName = getValidName("last name: ");
-        int nationalCode = getValidInt("national code: ");
-        String phoneNumber = getValidPhoneNumber("phone number: ");
-        MyDate birthDate = getValidBirthDate();
-        Car car = getCarInfo();
-        databaseAccessCar.save(car);
-        int carID = databaseAccessCar.lastCarID();
-        Driver driver = new Driver(firstName, lastName, nationalCode, phoneNumber, birthDate, carID,false,null);
-        return driver;
-    }
-
-    public static Car getCarInfo() {
-        System.out.println("enter car info:");
-        System.out.print(BLUE_BRIGHT + "plaque: " + RESET);
-        String plaque = scanner.next();
-        String ownerFirstName = getValidName("owner first name: ");
-        String ownerLastname = getValidName("owner last name: ");
-        VehicleColor vehicleColor = getValidColor();
-        CarType carType = getValidCarType();
-        Car car = new Car(1, plaque, ownerFirstName, ownerLastname, vehicleColor, carType);
-        return car;
-    }
-
-    public static Passenger getPassengerInfo() {
-        String firstName = getValidName("first name: ");
-        String lastName = getValidName("last name: ");
-        int nationalCode = getValidInt("national code: ");
-        String phoneNumber = getValidPhoneNumber("phone number: ");
-        MyDate birthDate = getValidBirthDate();
-        double balance = getValidDouble("balance: ");
-        Passenger passenger = new Passenger(firstName, lastName, nationalCode, phoneNumber, birthDate, balance, false);
-        return passenger;
     }
 
     public static void RegisterOrLoginPassenger(DatabaseAccessPassenger dap) throws SQLException, ClassNotFoundException {
@@ -253,43 +217,14 @@ public class Main {
         }
     }
 
-    public static void saveTravel(DatabaseAccessTravel accessTravel,DatabaseAccessDriver accessDriver,DatabaseAccessPassenger accessPassenger) throws SQLException {
-        int user_id_driver = getValidInt("user_id_driver: ");
-        int user_id_passenger = getValidInt("user_id_passenger: ");
-        MyDate startDate = getValidDate("startDate: ");
-        MyDate endDate = getValidDate("startDate: ");
-        Coordinate origin = getValidCoordinate("origin: ");
-        Coordinate destination = getValidCoordinate("destination: ");
-        double price = getValidDouble("price: ");
-        Travel travel=new Travel(user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price,false);
-        if(accessPassenger.findPassengerByID(user_id_passenger)){
-            if(accessPassenger.checkBalanceIsEnough(user_id_passenger,price)){
-                if(accessDriver.findDriverByID(user_id_driver)){
-                    accessTravel.save(travel);
-                    accessPassenger.paymentTravel(user_id_passenger,price);
-                }else {
-                    System.out.println(RED+"incorrect driver userID !"+RESET);
-                }
-            }else {
-                System.out.println(RED+"your balance is not enough !"+RESET);
-            }
-        }else {
-            System.out.println(RED+"incorrect passenger userID !"+RESET);
-        }
-    }
-
-    public static void ongoingTravelMenu(DatabaseAccessTravel accessTravel,DatabaseAccessDriver accessDriver,DatabaseAccessPassenger accessPassenger) throws SQLException, ClassNotFoundException {
-        int choice=getValidChoice(PURPLE_BRIGHT+"1)add travel \n2)show ongoing travels \n3)Back to main menu \nenter your choice: "+RESET,3);
+    public static void ongoingTravelMenu(DatabaseAccessTravel accessTravel) throws SQLException, ClassNotFoundException {
+        int choice=getValidChoice(PURPLE_BRIGHT+"1))show ongoing travels \n2)Back to main menu \nenter your choice: "+RESET,2);
         switch (choice){
             case 1:{
-                saveTravel(accessTravel,accessDriver,accessPassenger);
-                ongoingTravelMenu(accessTravel,accessDriver,accessPassenger);
+                accessTravel.printOngoingTravels();
+                ongoingTravelMenu(accessTravel);
             }break;
-            case 2:{
-                accessPassenger.printOngoingTravels();
-                ongoingTravelMenu(accessTravel,accessDriver,accessPassenger);
-            }break;
-            case 3: printMenu(); break;
+            case 2: printMenu(); break;
             default:{
                 System.out.println("invalid choice!");
             }break;

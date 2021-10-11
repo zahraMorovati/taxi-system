@@ -57,4 +57,6 @@ public class Driver extends Person{
     public String toString() {
         return super.toString()+" , car id: "+carID +"\ncurrent coordinate: "+currentCoordinate.toString()+" ,travel status: "+ status;
     }
+
+
 }
