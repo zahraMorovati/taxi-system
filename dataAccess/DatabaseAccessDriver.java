@@ -60,6 +60,7 @@ public class DatabaseAccessDriver extends DatabaseAccess{
     }
 
     public List<Driver> findAllDrivers() throws SQLException {
+
         if (getConnection() != null) {
             List<Driver> driverList = new ArrayList<>();
             Statement statement = getConnection().createStatement();
@@ -82,6 +83,7 @@ public class DatabaseAccessDriver extends DatabaseAccess{
         } else {
             return Collections.emptyList();
         }
+
     }
 
     public boolean findDriverByID(int userID) throws SQLException {

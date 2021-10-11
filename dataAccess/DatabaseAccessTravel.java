@@ -1,6 +1,6 @@
 package dataAccess;
 
-import model.Passenger;
+import model.Coordinate;
 import model.Travel;
 import myDate.MyDate;
 
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static model.Coordinate.stringToCoordinate;
 import static validData.ConsoleColors.*;
 
 public class DatabaseAccessTravel extends DatabaseAccess {
@@ -36,6 +37,7 @@ public class DatabaseAccessTravel extends DatabaseAccess {
                 "    origin VARCHAR(50)," +
                 "    destination VARCHAR(50)," +
                 "    price DOUBLE," +
+                "    isPaid boolean DEFAULT false," +
                 "    PRIMARY KEY (id) ," +
                 "    FOREIGN KEY (user_id_driver) REFERENCES driver(user_id)," +
                 "    FOREIGN KEY (user_id_passenger) REFERENCES passenger(user_id))");
@@ -45,10 +47,10 @@ public class DatabaseAccessTravel extends DatabaseAccess {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("INSERT INTO travel" +
-                            " ( user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price) " +
-                            "VALUES ('%d','%d','%s','%s','%s','%s','%f')",
+                            " ( user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price,isPaid) " +
+                            "VALUES ('%d','%d','%s','%s','%s','%s','%f','%d')",
                     t.getDriverID(),t.getPassengerID(),t.getStartDate().toString(),t.getEndDate().toString(),
-            t.getOrigin(),t.getDestination(),t.getPrice());
+            t.getOrigin().toString(),t.getDestination().toString(),t.getPrice(),t.getIsPaid());
             int i = statement.executeUpdate(sqlQuery);
             if(i>=0){
                 System.out.println(GREEN+"your information successfully saved!"+RESET);
@@ -71,10 +73,11 @@ public class DatabaseAccessTravel extends DatabaseAccess {
                 int user_id_passenger = resultSet.getInt("user_id_passenger");
                 MyDate startDate = MyDate.convertStringToDate(resultSet.getString("startDate"));
                 MyDate endDate = MyDate.convertStringToDate(resultSet.getString("endDate"));
-                String origin = resultSet.getString("origin");
-                String destination = resultSet.getString("destination");
+                Coordinate origin=stringToCoordinate(resultSet.getString("origin"));
+                Coordinate destination=stringToCoordinate(resultSet.getString("destination"));
                 double price = resultSet.getDouble("price");
-                Travel travel = new Travel(user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price);
+                Boolean isPaid = resultSet.getBoolean("isPaid");
+                Travel travel = new Travel(user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price,isPaid);
                 travelList.add(travel);
             }
             return travelList;

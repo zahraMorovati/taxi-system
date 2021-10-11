@@ -8,20 +8,35 @@ public class Travel {
     private int passengerID;
     private MyDate startDate;
     private MyDate endDate;
-    private String origin;
-    private String destination;
+    private Coordinate origin;
+    private Coordinate destination;
     private double price;
+    private boolean isPaid;
 
-
-    public Travel(int driverId, int passengerID, MyDate startDate, MyDate endDate, String origin, String destination, double price) {
-        this.driverID = driverId;
+    public Travel(int driverID, int passengerID, MyDate startDate, MyDate endDate, Coordinate origin, Coordinate destination, double price, boolean isPaid) {
+        this.driverID = driverID;
         this.passengerID = passengerID;
         this.startDate = startDate;
         this.endDate = endDate;
         this.origin = origin;
         this.destination = destination;
         this.price = price;
+        this.isPaid = isPaid;
     }
+
+    public Travel(int id, int driverID, int passengerID, MyDate startDate, MyDate endDate, Coordinate origin, Coordinate destination, double price, boolean isPaid) {
+        this.id = id;
+        this.driverID = driverID;
+        this.passengerID = passengerID;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.origin = origin;
+        this.destination = destination;
+        this.price = price;
+        this.isPaid = isPaid;
+    }
+
+
 
     public int getId() {
         return id;
@@ -63,20 +78,34 @@ public class Travel {
         this.endDate = endDate;
     }
 
-    public String getOrigin() {
+    public Coordinate getOrigin() {
         return origin;
     }
 
-    public void setOrigin(String origin) {
+    public void setOrigin(Coordinate origin) {
         this.origin = origin;
     }
 
-    public String getDestination() {
+    public Coordinate getDestination() {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(Coordinate destination) {
         this.destination = destination;
+    }
+
+    public boolean isPaid() {
+        return isPaid;
+    }
+
+    public int getIsPaid() {
+        if(isPaid)
+            return 1;
+        else return 0;
+    }
+
+    public void setPaid(boolean paid) {
+        isPaid = paid;
     }
 
     public double getPrice() {

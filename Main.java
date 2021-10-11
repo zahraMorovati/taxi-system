@@ -258,10 +258,10 @@ public class Main {
         int user_id_passenger = getValidInt("user_id_passenger: ");
         MyDate startDate = getValidDate("startDate: ");
         MyDate endDate = getValidDate("startDate: ");
-        String origin = getValidName("origin: ");
-        String destination = getValidName("destination: ");
+        Coordinate origin = getValidCoordinate("origin: ");
+        Coordinate destination = getValidCoordinate("destination: ");
         double price = getValidDouble("price: ");
-        Travel travel=new Travel(user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price);
+        Travel travel=new Travel(user_id_driver,user_id_passenger,startDate,endDate,origin,destination,price,false);
         if(accessPassenger.findPassengerByID(user_id_passenger)){
             if(accessPassenger.checkBalanceIsEnough(user_id_passenger,price)){
                 if(accessDriver.findDriverByID(user_id_driver)){

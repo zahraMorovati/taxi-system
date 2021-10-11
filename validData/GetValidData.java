@@ -1,6 +1,7 @@
 package validData;
 
 import model.CarType;
+import model.Coordinate;
 import model.VehicleColor;
 import myDate.MyDate;
 
@@ -78,6 +79,17 @@ public class GetValidData {
         } else {
             System.out.println(RED + "invalid input!" + RESET);
             return getValidDouble(message);
+        }
+    }
+
+    public static Coordinate getValidCoordinate(String message){
+        try {
+            int length=getValidInt(message+" length: ");
+            int width=getValidInt(message+" width: ");
+            Coordinate coordinate=new Coordinate(length,width);
+            return coordinate;
+        }catch (InputMismatchException e){
+            return getValidCoordinate(message);
         }
     }
 
