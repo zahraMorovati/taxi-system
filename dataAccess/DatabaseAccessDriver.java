@@ -1,8 +1,7 @@
 package dataAccess;
 
+import model.Coordinate;
 import model.Driver;
-import model.Passenger;
-import model.Person;
 import myDate.MyDate;
 
 import java.sql.*;
@@ -10,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static model.Coordinate.stringToCoordinate;
 import static validData.ConsoleColors.*;
 
 public class DatabaseAccessDriver extends DatabaseAccess{
@@ -37,6 +37,8 @@ public class DatabaseAccessDriver extends DatabaseAccess{
                 "    phoneNumber VARCHAR(11)," +
                 "    birthDate Date," +
                 "    car_id INT," +
+                "    status boolean DEFAULT false," +
+                "    current_coordinate VARCHAR(25)," +
                 "    PRIMARY KEY (user_id) ," +
                 "    FOREIGN KEY (car_id) REFERENCES car(id))");
 
@@ -47,9 +49,9 @@ public class DatabaseAccessDriver extends DatabaseAccess{
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("INSERT INTO driver" +
-                            " ( first_name,last_name,nationalCode,phoneNumber,birthDate,car_id) " +
-                            "VALUES ('%s','%s','%d','%s','%s','%d')",
-                 d.getFirstName(),d.getLastName(),d.getNationalCode(),d.getPhoneNumber(),d.getBirthDate().toString(),d.getCarID());
+                            " ( first_name,last_name,nationalCode,phoneNumber,birthDate,car_id,status,current_coordinate) " +
+                            "VALUES ('%s','%s','%d','%s','%s','%d','%d','%s')",
+                 d.getFirstName(),d.getLastName(),d.getNationalCode(),d.getPhoneNumber(),d.getBirthDate().toString(),d.getCarID(),d.getStatus(),d.getCurrentCoordinate().toString());
             int i = statement.executeUpdate(sqlQuery);
             return i;
         } else {
@@ -71,7 +73,9 @@ public class DatabaseAccessDriver extends DatabaseAccess{
                 String strBirthDate=resultSet.getString("birthDate");
                 MyDate birthDate=MyDate.convertStringToDate(strBirthDate);
                 int carID=resultSet.getInt("car_id");
-                Driver driver = new Driver(userID,firstName,lastName,nationalCode,phoneNumber,birthDate,carID);
+                Boolean status = resultSet.getBoolean("status");
+                Coordinate coordinate=stringToCoordinate(resultSet.getString("current_coordinate"));
+                Driver driver = new Driver(userID,firstName,lastName,nationalCode,phoneNumber,birthDate,carID,status,coordinate);
                 driverList.add(driver);
             }
             return driverList;
@@ -120,7 +124,5 @@ public class DatabaseAccessDriver extends DatabaseAccess{
             System.out.println(RED+"cannot connect to database!"+RESET);
         }
     }
-
-
 
 }

@@ -118,7 +118,7 @@ public class Main {
         Car car = getCarInfo();
         databaseAccessCar.save(car);
         int carID = databaseAccessCar.lastCarID();
-        Driver driver = new Driver(firstName, lastName, nationalCode, phoneNumber, birthDate, carID);
+        Driver driver = new Driver(firstName, lastName, nationalCode, phoneNumber, birthDate, carID,false,null);
         return driver;
     }
 
